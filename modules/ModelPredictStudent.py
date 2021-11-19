@@ -111,9 +111,8 @@ class ModelPredictStudent:
     for name in list(getInformation.symbols.keys()):
       face_img_temp = self.extract_feature.predict(np.array([getInformation.symbols[name]]))[0]
       cosine_similarity = self.__cosine_similarity(list(face_img_temp), list(face_img_cosine))
-      if cosine_similarity <= 0.6:
+      if cosine_similarity <= 0.7:
         counter += 1
-      
     if counter == len(getInformation.symbols.keys()) or counter == 0:
       return 0
 

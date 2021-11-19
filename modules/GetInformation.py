@@ -20,8 +20,6 @@ class GetInformation:
     self.symbols = {}
       
     GetInformation.number_of_students = len(self.data.keys())
-    # print ('Number of students = {}'.format(GetInformation.number_of_students))
-    # print (self.data.get('Nguyen Duc_Bao Lam'))
     self.__load_data_symbols()
     
   def load_data_training(self):
@@ -44,7 +42,7 @@ class GetInformation:
     return np.array(X), np.array(y)
   
   def get_information(self, id):
-    for idx, name in enumerate(self.data):
+    for __, name in enumerate(self.data):
       if self.data[name]['id'] == id:
         return name, self.data[name]['class']
     return '', ''
