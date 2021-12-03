@@ -16,7 +16,8 @@ from modules import channels
 from modules import getInformation
 
 class ModelPredictStudent:
-  have_height = True
+  have_height = False
+  number_percentage = 75
   modelcheckpoint = ModelCheckpoint(
     'checkpoint_best.hdf5',
     save_best_only=True,
@@ -101,22 +102,20 @@ class ModelPredictStudent:
     return cosine_sum
     
   def predict(self, face_img, len_fls_students=0):
-    check_call_for = True
     img = cv2.resize(face_img, (width, height))
     
     result = self.model.predict(np.array([img]))[0]
     index = np.argmax(result)
-    counter = 0
     face_img_cosine = self.extract_feature.predict(np.array([img]))[0]
-    for name in list(getInformation.symbols.keys()):
-      face_img_temp = self.extract_feature.predict(np.array([getInformation.symbols[name]]))[0]
-      cosine_similarity = self.__cosine_similarity(list(face_img_temp), list(face_img_cosine))
-      if cosine_similarity <= 0.7:
-        counter += 1
-    if counter == len(getInformation.symbols.keys()) or counter == 0:
+    sum_cosine_similarity = 0
+    for _, folder in enumerate(getInformation.symbols):
+      face_img_temp_cosine = self.extract_feature.predict(np.array([getInformation.symbols[folder]]))
+      sum_cosine_similarity += self.__cosine_similarity(
+        np.ndarray.flatten(face_img_cosine),
+        np.ndarray.flatten(face_img_temp_cosine)
+      )
+    if sum_cosine_similarity < 1:
       return 0
-
-    check_call_for = False if len_fls_students <= 0 else True
-    if check_call_for == False:
+    if sum_cosine_similarity > (ModelPredictStudent.number_percentage * len(getInformation.symbols.keys()) / 100):
       return 0
     return index

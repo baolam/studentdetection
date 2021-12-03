@@ -9,7 +9,7 @@ from modules import model_predict_student
 class DetectPersons:
   video = cv2.VideoCapture(0)
   detector = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-  total_file_collect = 200
+  total_file_collect = 250
     
   def read_camera(self):
     while True:
@@ -55,6 +55,7 @@ class DetectPersons:
     
   def data_collecting(self, name):
     continous = 0
+    checking = False
     while continous < DetectPersons.total_file_collect:
       __, img = DetectPersons.video.read()
       gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -69,6 +70,7 @@ class DetectPersons:
           cv2.LINE_AA
         )
       elif len(faces) > 1:
+        assert checking == True
         cv2.putText(img, 'CÓ NHIỀU HƠN 2 NGƯỜI',
           (20, 20), 
           cv2.FONT_HERSHEY_SIMPLEX,
@@ -93,5 +95,6 @@ class DetectPersons:
       cv2.imshow("DETECT_FACE", gray)
       if cv2.waitKey(100) & 0xFF == ord('q'):
         break
+      checking = True
     # DetectPersons.video.release()
     cv2.destroyAllWindows()
